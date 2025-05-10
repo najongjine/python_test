@@ -1,6 +1,6 @@
 import requests
 
-API_TOKEN = "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"  # 발급받은 토큰으로 교체
+API_TOKEN = ""  # 발급받은 토큰으로 교체
 API_URL = "https://api-inference.huggingface.co/models/gpt2"
 headers = {"Authorization": f"Bearer {API_TOKEN}"}
 

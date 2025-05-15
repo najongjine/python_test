@@ -29,6 +29,6 @@ def split_video_by_size(input_file, target_size_mb=4):
     clip.close()
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
-video_path = os.path.join(script_dir, '피그마로 웹사이트 10초 안에 베껴오기.mp4')
+video_path = os.path.join(script_dir, '피그마로 웹사이트 10초 안에 베껴오기 [MAdq_B4_4_w].mp4')
 # 사용 예시
 split_video_by_size(video_path, target_size_mb=4)

@@ -1,4 +1,5 @@
 https://angelplayer.tistory.com/351
+-ffmpeg 설치
 
 pip install yt-dlp
 

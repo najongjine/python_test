@@ -21,6 +21,11 @@ class Dino(pygame.sprite.Sprite):
         self.walk_images = [pygame.image.load(f'dino_walk_{i}.png').convert_alpha() for i in range(1, 7)]
         self.jump_images = [pygame.image.load(f'dino_jump_{i}.png').convert_alpha() for i in range(1, 5)]
         self.image = self.walk_images[0]
+        """
+        self.image는 공룡의 현재 이미지를 나타냅니다.
+self.rect는 해당 이미지의 사각형 영역을 나타내며, 이 영역이 충돌 감지에 사용됩니다.
+즉, 공룡의 충돌 영역은 현재 이미지의 크기와 위치에 따라 자동으로 설정됩니다.
+        """
         self.rect = self.image.get_rect(topleft=pos)
         self.index = 0
         self.is_jumping = False

@@ -1,5 +1,9 @@
 import pygame
 import sys
+import os
+
+# 현재 스크립트 파일의 디렉토리로 변경
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 # ▶ Pygame 초기화
 pygame.init()
@@ -14,12 +18,37 @@ clock = pygame.time.Clock()
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
+DINO_SPRITE_SIZE = (64, 64)
+OBASTACLE_SPRITE_SIZE = (60, 50)
+
+def get_resource_path(relative_path):
+    """리소스 파일의 절대 경로를 반환합니다."""
+    try:
+        # PyInstaller로 빌드된 실행 파일의 경우
+        base_path = sys._MEIPASS
+    except AttributeError:
+        # 개발 환경의 경우
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
+
 # ▶ Dino 클래스 정의
 class Dino(pygame.sprite.Sprite):
     def __init__(self, pos):
         super().__init__()
-        self.walk_images = [pygame.image.load(f'dino_walk_{i}.png').convert_alpha() for i in range(1, 7)]
-        self.jump_images = [pygame.image.load(f'dino_jump_{i}.png').convert_alpha() for i in range(1, 5)]
+        self.walk_images = [
+    pygame.transform.scale(
+        pygame.image.load(get_resource_path(f'dino_walk_{i}.png')).convert_alpha(),
+        DINO_SPRITE_SIZE
+    )
+    for i in range(1, 3)
+]
+        self.jump_images = [
+    pygame.transform.scale(
+        pygame.image.load(get_resource_path(f'dino_jump_{i}.png')).convert_alpha(),
+        DINO_SPRITE_SIZE
+    )
+    for i in range(1, 3)
+]
         self.image = self.walk_images[0]
         """
         self.image는 공룡의 현재 이미지를 나타냅니다.
@@ -31,7 +60,7 @@ self.rect는 해당 이미지의 사각형 영역을 나타내며, 이 영역이
         self.is_jumping = False
         self.velocity = 0
         self.gravity = 0.5
-        self.jump_strength = -10
+        self.jump_strength = -12
 
     def update(self):
         if self.is_jumping:
@@ -54,10 +83,13 @@ self.rect는 해당 이미지의 사각형 영역을 나타내며, 이 영역이
 
 
 # ▶ Obstacle 클래스 정의
-class Obstacle(pygame.sprite.Sprite):
+class Obstacle(pygame.sprite.Sprite):      
     def __init__(self, pos, speed):
         super().__init__()
-        self.image = pygame.image.load('obstacle.png').convert_alpha()
+        self.image = pygame.transform.scale(
+    pygame.image.load(get_resource_path('obstacle.png')).convert_alpha(),
+    OBASTACLE_SPRITE_SIZE
+)
         self.rect = self.image.get_rect(topleft=pos)
         self.speed = speed
 
@@ -72,8 +104,8 @@ all_sprites = pygame.sprite.Group()
 obstacles = pygame.sprite.Group()
 
 # 공룡과 장애물 인스턴스 생성
-dino = Dino(pos=(50, HEIGHT - 100))
-obstacle = Obstacle(pos=(WIDTH, HEIGHT - 50), speed=5)
+dino = Dino(pos=(50, HEIGHT - 90))
+obstacle = Obstacle(pos=(WIDTH, HEIGHT - 60), speed=5)
 
 # 스프라이트 그룹에 추가
 all_sprites.add(dino)

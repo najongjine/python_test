@@ -1,0 +1,22 @@
+pyinstaller dinogame_v3.py
+
+#dino_game.spec
+a = Analysis(
+    ['dinogame_v3.py'],
+    pathex=[],
+    binaries=[],
+    datas=[
+        ('dino_walk_1.png', '.'),
+        ('dino_walk_2.png', '.'),
+        ('dino_jump_1.png', '.'),
+        ('dino_jump_2.png', '.'),
+        ('obstacle.png', '.')
+    ],
+    hiddenimports=[],
+    hookspath=[],
+    runtime_hooks=[],
+    excludes=[],
+    noarchive=False,
+)
+
+pyinstaller dinogame_v3.spec

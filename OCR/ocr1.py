@@ -10,7 +10,7 @@ https://jihoonch.tistory.com/4
 import cv2
 import pytesseract
 import os
-
+#C:\Program Files\Tesseract-OCR
 # Tesseract 경로 설정 (Windows 사용자만 필요)
 pytesseract.pytesseract.tesseract_cmd = r'C:/Program Files/Tesseract-OCR/tesseract.exe'  # 설치 경로에 따라 수정
 
@@ -18,7 +18,7 @@ pytesseract.pytesseract.tesseract_cmd = r'C:/Program Files/Tesseract-OCR/tessera
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
 # 이미지 파일 경로
-image_path = os.path.join(script_dir, 'carplate1.jpg')
+image_path = os.path.join(script_dir, 'c4.jpg')
 
 # 이미지 읽기
 image = cv2.imread(image_path)

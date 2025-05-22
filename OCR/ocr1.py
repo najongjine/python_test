@@ -18,7 +18,7 @@ pytesseract.pytesseract.tesseract_cmd = r'C:/Program Files/Tesseract-OCR/tessera
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
 # 이미지 파일 경로
-image_path = os.path.join(script_dir, 'c4.jpg')
+image_path = os.path.join(script_dir, 'c2.jpg')
 
 # 이미지 읽기
 image = cv2.imread(image_path)
@@ -49,5 +49,6 @@ for cnt in sorted(contours, key=cv2.contourArea, reverse=True):
         break
 
 # OCR로 텍스트 인식
-text = pytesseract.image_to_string(plate, lang='kor')  # 한국어 인식을 위해 'kor' 사용
+custom_config = r'--oem 3 --psm 7'
+text = pytesseract.image_to_string(plate, lang='kor', config=custom_config)  # 한국어 인식을 위해 'kor' 사용
 print("인식된 번호판:", text.strip())

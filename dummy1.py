@@ -1,31 +1,34 @@
-import pygame  # 게임용 라이브러리
-import sys     # 시스템 종료 등을 위한 라이브러리
+import pandas as pd
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
 
-# ▶ Pygame 초기화
-pygame.init()
+# CSV 파일 불러오기
+df = pd.read_csv("spam_email.csv", encoding="utf-8")
 
-# ▶ 화면 크기 설정
-WIDTH, HEIGHT = 800, 400  # 가로 800, 세로 400
+# 데이터 확인 (처음 5개만 보기)
+print(df.head())
 
-screen = pygame.display.set_mode((WIDTH, HEIGHT))  # 게임 화면 생성
+# 입력값 (링크 여부, 스팸 단어 포함 여부 등)
+X = df[["링크포함", "스팸단어포함", "짧은메일", "느낌표개수"]]
 
-# ▶ 색상 정의 (RGB)
-WHITE = (255, 255, 255)
-clock = pygame.time.Clock()    
+# 정답값 (이메일이 스팸인지 아닌지)
+y = df["스팸여부"]
 
-# ▶ 게임 루프 시작
-running = True
-while running:
-    screen.fill(WHITE)  # 화면을 하얀색으로 지움 (매 프레임 초기화)
+# 70%는 훈련용, 30%는 테스트용으로 분리
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
 
-    # 1. 이벤트 처리
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+# 모델 만들기
+model = LogisticRegression()
 
-    # [7] 화면 업데이트
-    pygame.display.update()
-    clock.tick(60)  # 초당 60 프레임 유지
+# 학습시키기
+model.fit(X_train, y_train)
 
-pygame.quit()
-sys.exit()
+# 테스트 데이터로 예측해보기
+accuracy = model.score(X_test, y_test)
+print("정확도:", accuracy)
+
+# 예: 새 이메일 특징 입력 (링크O, 스팸단어O, 짧음, 느낌표 2개)
+new_email = [[1, 0, 0, 0]]
+
+prediction = model.predict(new_email)
+print("스팸 여부 예측 결과:", "스팸" if prediction[0] == 1 else "정상")

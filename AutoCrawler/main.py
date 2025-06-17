@@ -26,6 +26,8 @@ import base64
 from pathlib import Path
 import random
 
+script_dir = os.path.dirname(os.path.abspath(__file__))
+keyword_file_path = os.path.join(script_dir, "keywords.txt")
 
 class Sites:
     GOOGLE = 1
@@ -131,6 +133,8 @@ class AutoCrawler:
 
     @staticmethod
     def get_keywords(keywords_file='keywords.txt'):
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        keywords_file = os.path.join(script_dir, "keywords.txt")
         # read search keywords from file
         with open(keywords_file, 'r', encoding='utf-8-sig') as f:
             text = f.read()
@@ -138,7 +142,7 @@ class AutoCrawler:
             lines = filter(lambda x: x != '' and x is not None, lines)
             keywords = sorted(set(lines))
 
-        print('{} keywords found: {}'.format(len(keywords), keywords))
+        print(f'{len(keywords)} keywords found: {keywords}')
 
         # re-save sorted keywords
         with open(keywords_file, 'w+', encoding='utf-8') as f:

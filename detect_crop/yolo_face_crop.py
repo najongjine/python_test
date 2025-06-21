@@ -1,18 +1,10 @@
-"""
-pip install ultralytics opencv-python
-pip install yolov8face
-
-"""
 from ultralytics import YOLO
 import cv2
 import numpy as np
 import os
 
-# ✅ 모델 로드 (공식 YOLOv8n 모델로 충분히 테스트됨)
-model = YOLO('yolov8m_face.pt')  # 일반 객체 탐지 모델 (얼굴 class도 포함)
-
-# ✅ 클래스 ID 0 = person, 얼굴 전용 모델 없을 경우 이걸 활용
-# 원래 얼굴 전용 모델 yolov8n-face.pt 쓸 수 있으면 더 정확함
+# ✅ 모델 로드
+model = YOLO('yolov8m_face.pt')  # 얼굴 탐지 전용 모델 사용 (사전 준비되어 있어야 함)
 
 # ✅ 비율 유지 + 패딩
 def resize_with_padding(image, size=(224, 224), pad_color=(0, 0, 0)):
@@ -32,13 +24,10 @@ def resize_with_padding(image, size=(224, 224), pad_color=(0, 0, 0)):
                                  cv2.BORDER_CONSTANT, value=pad_color)
     return padded
 
-# ✅ 얼굴 인식 + crop + 저장
-def crop_faces_yolo(image_path, output_dir):
-    os.makedirs(output_dir, exist_ok=True)
+# ✅ 하나의 이미지에서 얼굴 crop
+def crop_faces_from_image(image_path, output_dir, image_name_prefix="face"):
     img = cv2.imread(image_path)
     results = model(img)
-
-    # box 좌표 가져오기
     boxes = results[0].boxes.xyxy.cpu().numpy()
 
     for idx, (x1, y1, x2, y2) in enumerate(boxes):
@@ -46,9 +35,22 @@ def crop_faces_yolo(image_path, output_dir):
         face = img[y1:y2, x1:x2]
         face_resized = resize_with_padding(face, (224, 224))
 
-        out_path = os.path.join(output_dir, f"face_{idx+1}.jpg")
+        out_path = os.path.join(output_dir, f"{image_name_prefix}_{idx+1}.jpg")
         cv2.imwrite(out_path, face_resized)
         print(f"✅ 저장됨: {out_path}")
 
-# ✅ 실행
-crop_faces_yolo("google_0050.jpg", "faces_output")
+# ✅ 입력 폴더 전체 처리
+def crop_faces_from_folder(input_folder, output_folder):
+    os.makedirs(output_folder, exist_ok=True)
+
+    for filename in os.listdir(input_folder):
+        if filename.lower().endswith((".jpg", ".jpeg", ".png")):
+            input_path = os.path.join(input_folder, filename)
+            name_prefix = os.path.splitext(filename)[0]  # ex: google_0050
+            crop_faces_from_image(input_path, output_folder, name_prefix)
+
+# ✅ 실행: 입력 폴더와 출력 폴더 경로 지정
+input_folder_path = "E:\python_test\AutoCrawler\download\Pak_Myung_Su"     # 👉 입력 폴더명 (이미지들이 있는 곳)
+output_folder_path = "E:\python_test\AutoCrawler\download\Pak_Myung_Su_cropped"   # 👉 출력 폴더명
+
+crop_faces_from_folder(input_folder_path, output_folder_path)

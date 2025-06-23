@@ -50,7 +50,7 @@ def crop_faces_from_folder(input_folder, output_folder):
             crop_faces_from_image(input_path, output_folder, name_prefix)
 
 # ✅ 실행: 입력 폴더와 출력 폴더 경로 지정
-input_folder_path = "E:\python_test\AutoCrawler\download\Pak_Myung_Su"     # 👉 입력 폴더명 (이미지들이 있는 곳)
-output_folder_path = "E:\python_test\AutoCrawler\download\Pak_Myung_Su_cropped"   # 👉 출력 폴더명
+input_folder_path = "C:\Users\itg\Documents\python_test\AutoCrawler\download\Kang_Ho_Dong"     # 👉 입력 폴더명 (이미지들이 있는 곳)
+output_folder_path = "C:\Users\itg\Documents\python_test\AutoCrawler\download\Kang_Ho_Dong\Kang_Ho_Dong_cropped"   # 👉 출력 폴더명
 
 crop_faces_from_folder(input_folder_path, output_folder_path)

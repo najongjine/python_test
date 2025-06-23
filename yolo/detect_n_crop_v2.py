@@ -12,7 +12,7 @@ model = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
 target_class = 'cat'
 
 # 예: 입력 images 폴더. 안의 모든 이미지 처리
-input_dir = ""   
+input_dir = "C:/Users/itg/Documents/python_test/yolo/source"   
 
 # 출력 이미지 폴더 설정
 script_dir = os.path.dirname(os.path.abspath(__file__))

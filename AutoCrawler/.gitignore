@@ -11,7 +11,6 @@ __pycache__/
 build/
 develop-eggs/
 dist/
-downloads/
 eggs/
 .eggs/
 lib/
@@ -103,5 +102,4 @@ venv.bak/
 # mypy
 .mypy_cache/
 
-download
 .idea

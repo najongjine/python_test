@@ -18,7 +18,7 @@ pytesseract.pytesseract.tesseract_cmd = r'C:/Program Files/Tesseract-OCR/tessera
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
 # 이미지 파일 경로
-image_path = os.path.join(script_dir, 'c2.jpg')
+image_path = os.path.join(script_dir, 'c1.jpg')
 
 # 이미지 읽기
 image = cv2.imread(image_path)

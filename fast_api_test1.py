@@ -68,3 +68,8 @@ def read_root():
 @app.get("/items/{item_id}")
 def read_item(item_id: int):
     return {"item_id": item_id}
+
+# ▶ 실행
+if __name__ == "__main__":
+    # host="0.0.0.0" : 모든 IP에서 접속 허용
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

@@ -1,18 +1,33 @@
+"""
+pip install fastapi
+pip install "uvicorn[standard]"
+pip install langchain
+pip install faiss-cpu
+pip install sentence-transformers  # 또는 HuggingFaceEmbeddings 쓸 경우
+pip install google-generativeai
+pip install -U langchain-community
+pip install fastapi "uvicorn[standard]" langchain faiss-cpu sentence-transformers google-generativeai
+
+"""
 from fastapi import FastAPI, Query
 from fastapi.responses import JSONResponse
 from typing import Optional
+import os
+import uvicorn
 
-from langchain.vectorstores import FAISS
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.vectorstores import FAISS
 import google.generativeai as genai
 
 # ▶ FastAPI 인스턴스 생성
 app = FastAPI()
 
 # ▶ FAISS 로드
-save_path = "/content/drive/MyDrive/dataset/embedding"
-embedding_model = ...  # 여기에 당신이 쓰는 임베딩 모델 객체를 넣으세요 (예: HuggingFaceEmbeddings 등)
+current_dir = os.path.dirname(os.path.abspath(__file__))  # 현재 파일 기준 디렉토리
+save_path = os.path.join(current_dir, "embedding/rag")
+embedding_model = HuggingFaceEmbeddings(model_name="sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
 vector_db = FAISS.load_local(save_path, embedding_model, allow_dangerous_deserialization=True)
-retriever = vector_db.as_retriever(search_kwargs={"k": 10})
+retriever = vector_db.as_retriever(search_kwargs={"k": 8})
 
 # ▶ Gemini 설정
 genai.configure(api_key="AIzaSyCj_KP3tWm9_3cgbjvQrZl5vv2M3_DBfZ0")
@@ -36,6 +51,15 @@ def gemini_rag_answer(query: str) -> str:
 """
     response = model.generate_content(prompt)
     return response.text
+
+# ▶ GET API 엔드포인트
+@app.get("/ask")
+def ask(query: str = Query(..., description="질문을 입력하세요")):
+    try:
+        answer = gemini_rag_answer(query)
+        return JSONResponse(content={"query": query, "answer": answer})
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"error": str(e)})
 
 @app.get("/")
 def read_root():

@@ -1,4 +1,6 @@
-# streamlit_app.py
+# vgg16_predict.py
+# pip install streamlit tensorflow pillow huggingface_hub
+# streamlit run vgg16_predict.py
 
 import streamlit as st
 import numpy as np

@@ -7,7 +7,7 @@ import uvicorn
 
 # ✅ 설정
 save_path = ""
-embedding_model = HuggingFaceEmbeddings(model_name="jhgan/ko-sroberta-multitask")  # 예시
+embedding_model = HuggingFaceEmbeddings(model_name="sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")  # 예시
 vector_db = FAISS.load_local(save_path, embedding_model, allow_dangerous_deserialization=True)
 retriever = vector_db.as_retriever(search_kwargs={"k": 8})
 

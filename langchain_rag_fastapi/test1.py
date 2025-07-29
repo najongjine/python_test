@@ -51,6 +51,19 @@ async def ask_question(request: QueryRequest):
         "answer": answer
     }
 
+@app.post("/ask_manual_sample")
+async def ask_question(request: QueryRequest):
+    answer = """
+    당신은 문서 기반 질문에 답하는 AI입니다.
+다음 문서를 참고해서 질문에 답하십시오:
+판매하는 상품 : 뱀, 호랑이, 쥐
+
+    """
+    return {
+        "query": request.query,
+        "answer": answer
+    }
+
 # ✅ 로컬 실행용 (uvicorn 으로 실행)
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

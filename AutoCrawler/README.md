@@ -1,4 +1,5 @@
 # AutoCrawler
+# python main.py --google true --naver true --full true --limit 300
 
 Google, Naver multiprocess image crawler (High Quality & Speed & Customizable)
 

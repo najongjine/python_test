@@ -4,6 +4,8 @@ from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.vectorstores import FAISS
 import google.generativeai as genai
 import uvicorn
+import numpy as np
+import faiss
 
 # ✅ 설정
 # faiss vector db가 있는 폴더. 소스코드랑 같은 경로에 있으면 그냥 비워두면 됨
@@ -26,17 +28,32 @@ class QueryRequest(BaseModel):
 
 # ✅ 응답 처리 함수
 def gemini_rag_answer(query: str) -> str:
-    # ✅ 점수와 함께 검색 (Top-K)
-    docs_and_scores = vector_db.similarity_search_with_score(query, k=10)
+    # ✅ 쿼리 벡터화 + 정규화
+    query_vec = embedding_model.embed_query(query)
+    query_vec = np.array([query_vec], dtype="float32")
+    faiss.normalize_L2(query_vec)
 
-    # ✅ cosine 유사도 기준으로 필터링 (예: 0.75 이상만 사용)
+    # ✅ FAISS 검색 (내적 기반 cosine 유사도)
+    k = 10
+    distances, indices = vector_db.index.search(query_vec, k)
+
+    # ✅ 문서 및 점수 가져오기
+    docs_and_scores = []
+    for idx, score in zip(indices[0], distances[0]):
+        if idx == -1:
+            continue
+        doc = vector_db.docstore.search(str(idx))
+        docs_and_scores.append((doc, score))  # score는 cosine similarity (0~1)
+
+    # ✅ 필터링
     threshold = 0.75
     filtered_docs = [doc for doc, score in docs_and_scores if score >= threshold]
+
+    # ✅ 로그
     print(f"[총 검색된 문서 수]: {len(docs_and_scores)}")
     print(f"[필터링된 문서 수]: {len(filtered_docs)}")
     for i, (doc, score) in enumerate(docs_and_scores, 1):
         print(f"📄 문서 {i} | 유사도 점수: {score:.3f}")
-
 
     # ✅ 문서 연결
     context = "\n".join([doc.page_content for doc in filtered_docs])
@@ -58,6 +75,7 @@ def gemini_rag_answer(query: str) -> str:
     # ✅ Gemini API 호출
     response = model.generate_content(prompt)
     return response.text
+
 
 
 # ✅ 엔드포인트 정의
